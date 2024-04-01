@@ -49,6 +49,7 @@ const getChatData = async (req , res , next) => {
                     userIds:[req.user.id , req.params.id]
                 }
             })
+            createChat.message = [];
             res.data = createChat;
         }else{
             res.data = data;
