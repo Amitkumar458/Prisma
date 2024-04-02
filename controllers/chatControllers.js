@@ -50,7 +50,7 @@ const getChatData = async (req , res , next) => {
                 }
             })
             createChat.message = [];
-            res.data = createChat;
+            res.data = [createChat];
         }else{
             res.data = data;
         }
