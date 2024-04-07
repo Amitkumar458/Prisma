@@ -1,9 +1,8 @@
 const prisma = require("../prisma");
 
 const postBlog = async (req , res , next) => {
-    const {title , body} = req.body;
+    const {title , image} = req.body;
     const authorId = req.user.id;
-    const image = "null";
     const slug = title.split(" ").join("-");
     const likeCount = 0;
     if(!title || !body || !authorId){
@@ -15,7 +14,7 @@ const postBlog = async (req , res , next) => {
     const data = await prisma.post.create({
         data:{
             title,
-            body,
+            body:"",
             author:{connect:{id:authorId}},
             Image:image,
             slug,
