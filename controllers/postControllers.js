@@ -5,6 +5,7 @@ const postBlog = async (req , res , next) => {
     const authorId = req.user.id;
     const slug = title.split(" ").join("-");
     const likeCount = 0;
+    const body = "null"
     if(!title || !body || !authorId){
         return res.json({
             success:false,
@@ -55,6 +56,9 @@ const suggestPost = async (req , res , next) => {
         const data = await prisma.post.findMany({
             include:{
                 author:true
+            },
+            orderBy: {
+                createdAt:'desc',
             }
         });
         res.data = data;
@@ -65,4 +69,42 @@ const suggestPost = async (req , res , next) => {
     next();
 }
 
-module.exports = {postBlog , getAlldata , suggestPost};
+const userPost = async (req , res , next) => {
+    const id = req.params.id;
+    try {
+        const data = await prisma.post.findMany({
+            where:{
+                authorId:id
+            },
+            orderBy: {
+                createdAt:'desc',
+            }
+        });
+        res.data = data;
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({success:false , msg:"something went wrong"});
+    }
+    next();
+}
+
+const PostById = async (req , res , next) => {
+    const id = req.params.id;
+    try {
+        const data = await prisma.post.findFirst({
+            where:{
+                id:id
+            },
+            include:{
+                author:true
+            }
+        })
+        res.data = data;
+        next();
+    } catch (error) {
+        return res.status(400).json({success:false , msg:"something went wrong"});
+    }
+
+}
+
+module.exports = {postBlog , getAlldata , suggestPost , userPost , PostById};
