@@ -24,6 +24,8 @@ endpoinsts{
 
 
 
+    "api/user/follower/:name" -> it will return all followers list in details;
+
 
 
     // chat controller

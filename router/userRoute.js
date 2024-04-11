@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { signup, loginuser, authUser , addFollower, finduser } = require("../controllers/userControllers");
+const { signup, loginuser, authUser , addFollower, finduser, getFollowers, getFollowing } = require("../controllers/userControllers");
 const { getAlldata } = require("../controllers/postControllers");
 
 const router = Router();
@@ -25,6 +25,14 @@ router.post('/addfollowing' , [authUser , addFollower] , (req , res) => {
 })
 
 router.get('/:name' , [authUser , finduser] , (req , res) => {
+    res.status(200).json({success:true , data:res.data});
+})
+
+router.get('/followers/:name' , getFollowers , (req , res) => {
+    res.status(200).json({success:true , data:res.data});
+})
+
+router.get('/following/:name' , getFollowing , (req , res) => {
     res.status(200).json({success:true , data:res.data});
 })
 

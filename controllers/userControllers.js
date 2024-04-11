@@ -161,4 +161,61 @@ const finduser = async (req , res , next) => {
     next();
 }
 
-module.exports = {signup , authUser , loginuser , getuserByUsername , addFollower , finduser};
+const getFollowers = async (req , res , next) => {
+    const name = req.params.name;
+    try {
+        const data = await prisma.user.findFirst({
+            where:{
+                username:name
+            },
+            include:{
+                followers:true
+            }
+        })
+        const follower = data.followers.map((value) => {
+            return value.followerId
+        })
+        const data2 = await prisma.user.findMany({
+            where:{
+                id:{
+                    in:follower
+                }
+            }
+        })
+        res.data = data2;
+        next();
+    } catch (error) {
+        return res.status(400).json({success:false , msg:"something went wrong"});
+    }
+}
+
+const getFollowing = async (req , res , next) => {
+    const name = req.params.name;
+    try {
+        const data = await prisma.user.findFirst({
+            where:{
+                username:name
+            },
+            include:{
+                following:true
+            }
+        })
+        const following = data.following.map((value) => {
+            return value.followingId
+        })
+        const data2 = await prisma.user.findMany({
+            where:{
+                id:{
+                    in:following
+                }
+            }
+        })
+        res.data = data2;
+        next();
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({success:false , msg:"something went wrong"});
+    }
+}
+
+module.exports = {signup , authUser , loginuser , getuserByUsername , addFollower , finduser , getFollowers , getFollowing};
