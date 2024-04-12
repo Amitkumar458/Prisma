@@ -36,6 +36,17 @@ model Post {
   createdAt DateTime @default(now())
   author User @relation(fields: [authorId] , references: [id] , onDelete:Cascade , onUpdate:Cascade)
   authorId String @db.ObjectId
+  comment Comment[]
+}
+
+model Comment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  text String?
+  createdAt DateTime @default(now())
+  postId String @db.ObjectId
+  post Post @relation(fields: [postId] , references: [id] , onDelete:Cascade , onUpdate:Cascade)
+  userId String @db.ObjectId
+  username String 
 }
 
 model Followers {

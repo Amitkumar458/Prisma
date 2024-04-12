@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { authUser } = require('../controllers/userControllers');
-const { postBlog, suggestPost, userPost, PostById } = require('../controllers/postControllers');
+const { postBlog, suggestPost, userPost, PostById, addComment, allComment } = require('../controllers/postControllers');
 
 const router = Router();
 
@@ -27,6 +27,16 @@ router.get('/:id' , userPost , (req , res) => {
 // find post of by postId
 router.get('/p/:id' , PostById , (req , res) => {
     res.status(200).json({success:true , data:[res.data]});
+})
+
+// comment on a post
+router.post('/comment' , [authUser , addComment] , (req , res) => {
+    res.status(200).json({success:true , data:res.data});
+})
+
+// get all comment of a perticular post by providing id
+router.get('/comment/:id' , allComment , (req , res) => {
+    res.status(200).json({success:true , data:res.data});
 })
 
 

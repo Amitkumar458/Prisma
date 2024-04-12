@@ -107,4 +107,46 @@ const PostById = async (req , res , next) => {
 
 }
 
-module.exports = {postBlog , getAlldata , suggestPost , userPost , PostById};
+const addComment = async (req , res , next) => {
+    const {text , postId} = req.body;
+    const userId = req.user.id;
+    const username = req.user.username;
+    if(!text || !postId || !userId || !username){
+        return res.status(400).json({success:false , msg:"all field is required"});
+    }
+    try {
+        const data = await prisma.comment.create({
+            data:{
+                text , postId , userId , username
+            }
+        })
+        res.data = data;
+    } catch (error) {
+        return res.status(400).json({success:false , msg:"something went wrong"});
+    }
+    next();
+}
+
+
+const allComment = async (req , res , next) => {
+    const postId = req.params.id;
+    try {
+        const data = await prisma.post.findFirst({
+            where:{
+                id:postId
+            },
+            select:{
+                comment:true
+            },
+            orderBy: {
+                createdAt:'desc',
+            }
+        })
+        res.data = data;
+        next();
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({success:false , msg:'something went wrong'});
+    }
+}
+module.exports = {postBlog , getAlldata , suggestPost , userPost , PostById , addComment , allComment};
